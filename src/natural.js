@@ -1,17 +1,8 @@
 // @ts-check
-const fs = require('fs');
-const path = require('path');
 const natural = require('natural');
+const { getText, outputWords } = require('./utils');
 /** @typedef {import("./types").Word} Word */
 /** @typedef {import("./types").SegmenterClass} SegmenterClass */
-
-/**
- * @param {string} filePath
- * @returns {string}
- */
-function getText(filePath) {
-  return fs.readFileSync(path.join(__dirname, filePath), 'utf8');
-}
 
 const text = getText('../data/contes-de-fées-2-blondine-perdue.txt');
 const ignoreWords = new Set(getText('../data/ignore-list.txt').split('\n'));
@@ -90,14 +81,4 @@ for (const { segment: sentence } of sentenceSegmenter.segment(text)) {
   }
 }
 
-const sortedWords = [...result.values()].sort(
-  (a, b) => b.frequency - a.frequency,
-);
-
-for (const { stem, frequency, tokens } of sortedWords) {
-  let displayStem = stem;
-  if (tokens.size === 1) {
-    displayStem = [...tokens][0];
-  }
-  console.log(displayStem, '\t', frequency, '\t', [...tokens].join(', '));
-}
+outputWords(result);
