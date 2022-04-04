@@ -27,9 +27,15 @@ function getPath(filePath) {
 }
 
 function outputWords(result) {
-  const sortedWords = [...result.values()].sort(
-    (a, b) => b.frequency - a.frequency,
-  );
+  const sortedWords = [...result.values()].sort((a, b) => {
+    if (a.stem === undefined) {
+      return -1;
+    }
+    if (b.stem === undefined) {
+      return 1;
+    }
+    return b.frequency - a.frequency;
+  });
 
   for (const { stem, frequency, tokens } of sortedWords) {
     let displayStem = stem;

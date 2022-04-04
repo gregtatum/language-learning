@@ -47,6 +47,8 @@ const hunSpellStems = hunSpellOutput.toString().split('\n\n');
 /** @type {Map<string, Word>} */
 const result = new Map();
 
+const isNumber = /^\d+$/;
+
 for (const lines of hunSpellStems) {
   // Use the last stem listed.
   if (!lines) continue;
@@ -54,7 +56,7 @@ for (const lines of hunSpellStems) {
   if (!line) continue;
   const [word, stem] = line.split(' ');
 
-  if (ignoreWords.has(stem) || ignoreWords.has(word)) {
+  if (ignoreWords.has(stem) || ignoreWords.has(word) || isNumber.exec(word)) {
     continue;
   }
 
