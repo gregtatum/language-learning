@@ -48,7 +48,8 @@ module.exports = {
     ],
     // Providing empty functions is useful for noops.
     '@typescript-eslint/no-empty-function': 'off',
-
+    // Why even?
+    '@typescript-eslint/ban-ts-comment': 'off',
     // Only use the TypeScript variant.
     'no-unused-vars': 'off',
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
