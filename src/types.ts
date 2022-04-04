@@ -4,6 +4,13 @@ export interface Word {
   tokens: Set<string>;
 }
 
+export interface Stem {
+  stem: string;
+  frequency: number;
+  tokens: Set<string>;
+  sentences: string[];
+}
+
 export declare class Segmenter {
   constructor(
     locale: string,
