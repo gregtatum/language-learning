@@ -13,7 +13,11 @@ if (!port) {
 }
 
 app.get('/', (req, res) => {
-  res.send('Hello World!');
+  res.json({ endpoints: ['/stem'] });
+});
+
+app.get('/stem', (req, res) => {
+  res.json({ words: [] });
 });
 
 app.listen(port, () => {
