@@ -1,11 +1,8 @@
 // @ts-check
 const { Nodehun } = require('nodehun');
-const fs = require('fs');
+const fs = require('fs/promises');
 const path = require('path');
-const affix = fs.readFileSync(path.join(__dirname, '../data/fr.aff'));
-const dictionary = fs.readFileSync(path.join(__dirname, '../data/fr.dic'));
 const express = require('express');
-const hunspell = new Nodehun(affix, dictionary);
 
 /** @typedef {import("./types").SegmenterClass} SegmenterClass */
 /** @typedef {import("./types").Stem} Stem */
@@ -34,16 +31,52 @@ app.get('/', (req, res) => {
   });
 });
 
-app.get('/stem', async (req, res) => {
+/**
+ * Returns the validated locale, which can be passed to the file system.
+ * @param {string} locale
+ * @returns {string | null}
+ */
+function validateLocale(locale) {
+  // Expect BCP-47 identifiers like "en" or "en-US".
+  if (/^\w\w+(-\w\w+)?$/.exec(locale)) {
+    return locale;
+  }
+  return null;
+}
+
+app.get('/:locale/stem', async (req, res) => {
   try {
     const { text } = req.query;
+    const locale = validateLocale(req.params.locale);
+    if (!locale) {
+      res.status(400);
+      res.json('invalid locale');
+      return;
+    }
     if (typeof text !== 'string') {
       res.status(400);
       res.json('"text" must be a string');
       return;
     }
-    const sentenceSegmenter = new Segmenter('fr', { granularity: 'sentence' });
-    const wordSegmenter = new Segmenter('fr', { granularity: 'word' });
+    let affix, dictionary;
+    try {
+      affix = await fs.readFile(
+        path.join(__dirname, '../dictionaries', locale, 'index.aff'),
+      );
+      dictionary = await fs.readFile(
+        path.join(__dirname, '../dictionaries', locale, 'index.dic'),
+      );
+    } catch (error) {
+      res.status(404);
+      res.json(`The locale "${locale} could not be found."`);
+      return;
+    }
+    const hunspell = new Nodehun(affix, dictionary);
+
+    const sentenceSegmenter = new Segmenter(locale, {
+      granularity: 'sentence',
+    });
+    const wordSegmenter = new Segmenter(locale, { granularity: 'word' });
     /** @type {Map<string, Stem>} */
     const stemsByStem = new Map();
     for (const { segment: sentence } of sentenceSegmenter.segment(text)) {
