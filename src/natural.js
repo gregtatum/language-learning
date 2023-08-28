@@ -5,7 +5,7 @@ const { getText, outputWords } = require('./utils');
 /** @typedef {import("./types").SegmenterClass} SegmenterClass */
 
 const text = getText('../data/contes-de-fées-2-blondine-perdue.txt');
-const ignoreWords = new Set(getText('../data/ignore-list.txt').split('\n'));
+const ignoreWords = new Set(getText('../data/ignore-fr.txt').split('\n'));
 const verbDeStemmer = getVerbDeStemmer();
 
 /**

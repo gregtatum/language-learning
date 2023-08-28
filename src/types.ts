@@ -7,7 +7,7 @@ export interface Word {
 export interface Stem {
   stem: string;
   frequency: number;
-  tokens: Set<string>;
+  tokens: string[];
   sentences: string[];
 }
 

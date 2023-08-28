@@ -4,7 +4,7 @@ const { execSync } = require('child_process');
 const { getText, getTextCwd, getPath, outputWords } = require('./utils');
 
 /** @typedef {import("./types").Word} Word */
-const ignoreWords = new Set(getText('../data/ignore-list.txt').split('\n'));
+const ignoreWords = new Set(getText('../data/ignore-fr.txt').split('\n'));
 
 const dictionaryPath = getPath('../dictionaries');
 const scratchFilePath = getPath('.scratch');
